@@ -7,5 +7,8 @@ rule-validation
  - `npm i`: to install app dependencies
  - `npm run dev`:  to start app in development mode
 
+ ### Start for production
+  - `npm run build` && `npm start`
+
  ## how to test app
   - Run `npm test` 
