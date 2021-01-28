@@ -25,24 +25,25 @@ export default async function validate(
 
   const data = body.data;
   const rule = body.rule;
-  if (rule) {
+
+  if (rule || typeof rule === 'string') {
     if (typeof rule !== 'object' || Array.isArray(rule)) {
       return res.status(400).json({
         message: `rule should be an object.`,
-        success: 'error',
+        status: 'error',
         data: null,
       });
     }
   }
   let dataValidation: any = Joi.string().required();
 
-  if (typeof data !== 'object') {
+  if (data && typeof data !== 'object' && typeof data !== 'string') {
     return res.status(400).json({
-      message: `data should be an object.`,
-      success: 'error',
+      message: `data should be an object | string | array.`,
+      status: 'error',
       data: null,
     });
-  } else {
+  } else if (typeof data === 'object') {
     dataValidation = Array.isArray(data)
       ? Joi.array().required()
       : Joi.object().required();
@@ -52,18 +53,17 @@ export default async function validate(
 
   try {
     const { error } = schema.validate(body);
-    console.log('errror', error);
     if (error) {
       const key = parseError(error);
       return res
         .status(400)
-        .json({ message: `${key} is required.`, success: 'error', data: null });
+        .json({ message: `${key} is required.`, status: 'error', data: null });
     }
   } catch (err) {
     if (err) {
       return res
         .status(400)
-        .json({ message: 'An error occured.', success: 'error', data: null });
+        .json({ message: 'An error occured.', status: 'error', data: null });
     }
   }
 

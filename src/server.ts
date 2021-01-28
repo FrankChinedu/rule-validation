@@ -16,6 +16,17 @@ Route(app);
 
 app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
 
+app.use(function (err, req, res, next) {
+  if (err) {
+    res.status(400).json({
+      message: 'Invalid JSON payload passed.',
+      status: 'error',
+      data: null,
+    });
+  }
+  next();
+});
+
 if (NODE_ENV !== 'test') {
   app.listen(APP_PORT, () => {
     consola.success(`server is listening on port ${APP_PORT}`);
