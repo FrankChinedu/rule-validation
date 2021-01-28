@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET should get my details 1`] = `
+Object {
+  "data": Object {
+    "email": "frankieetchy@gmail.com",
+    "github": "@FrankChinedu",
+    "mobile": "07069297676",
+    "name": "Obi Chinedu Frank",
+    "twitter": "@frankieetchy",
+  },
+  "message": "My Rule-Validation API",
+  "status": "success",
+}
+`;
