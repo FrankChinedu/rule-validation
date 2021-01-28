@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import { app } from '../src/server';
+import { throwIfUndefined } from '../src/util';
 
 const server = () => supertest(app);
 
@@ -25,6 +26,27 @@ const validate = {
     missions: 45,
   },
 };
+describe('NOT FOUND ROUTE', () => {
+  it('Should return not found', async () => {
+    const { body, status } = await server().get('/unknown');
+    expect(status).toBe(404);
+    expect(body.message).toBe('Route not found.');
+    expect(body.status).toBe('error');
+    expect(body.data).toBe(null);
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+  });
+
+  it('Should throwIfUndefined', async () => {
+    expect(throwIfUndefined).toThrow();
+  });
+
+  it('Should return env passed', async () => {
+    process.env.PORT = '5000';
+    const PORT = process.env.PORT;
+    expect(throwIfUndefined(PORT, 'PORT')).toEqual('5000');
+  });
+});
 
 describe('GET', () => {
   it('should get my details', async () => {

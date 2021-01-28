@@ -14,7 +14,11 @@ app.use(cors());
 
 Route(app);
 
-app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
+app.use((req, res) =>
+  res
+    .status(404)
+    .json({ message: 'Route not found.', status: 'error', data: null }),
+);
 
 app.use(function (err, req, res, next) {
   if (err) {
@@ -28,6 +32,7 @@ app.use(function (err, req, res, next) {
 });
 
 if (NODE_ENV !== 'test') {
+  /* istanbul ignore next */
   app.listen(APP_PORT, () => {
     consola.success(`server is listening on port ${APP_PORT}`);
   });
