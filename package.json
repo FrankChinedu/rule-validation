@@ -5,7 +5,7 @@
   "main": "src/server",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": "node ./build/src/server.js",
+    "start": "npm run build && node ./build/src/server.js",
     "build": "tsc -p tsconfig.json",
     "test": "NODE_ENV=test jest --coverage",
     "test:watch": "jest --watchAll"
@@ -17,7 +17,7 @@
   "keywords": [
     "rule"
   ],
-  "author": "",
+  "author": "Obi chinedu Frank",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/FrankChinedu/rule-validation/issues"
