@@ -1,7 +1,6 @@
 import express from 'express';
 import { json } from 'body-parser';
 import cors from 'cors';
-import consola from 'consola';
 
 import Route from './routes/index';
 
@@ -34,7 +33,8 @@ app.use(function (err, req, res, next) {
 if (NODE_ENV !== 'test') {
   /* istanbul ignore next */
   app.listen(APP_PORT, () => {
-    consola.success(`server is listening on port ${APP_PORT}`);
+    // eslint-disable-next-line no-console
+    console.log(`server is listening on port ${APP_PORT}`);
   });
 }
 
