@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "test": "NODE_ENV=test jest --coverage",
     "test:watch": "jest --watchAll",
-    "postinstall": "npm run tsc"
+    "postinstall": "tsc"
   },
   "repository": {
     "type": "git",
