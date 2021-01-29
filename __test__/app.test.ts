@@ -128,4 +128,178 @@ describe('POST', () => {
     const bodyKeys = ['message', 'status', 'data'];
     expect(Object.keys(body)).toEqual(bodyKeys);
   });
+
+  it(`If the field specified in the rule object is missing from the data passed`, async () => {
+    const data = {
+      rule: {
+        condition: 'gte',
+        condition_value: 30,
+      },
+      data: 'field',
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe('"rule.field" is required.');
+    expect(body.status).toBe('error');
+    expect(body.data).toBe(null);
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+  });
+
+  it(`If the field specified in the rule object is missing from the data passed`, async () => {
+    const data = {
+      rule: {
+        field: 'age',
+        condition: 'gte',
+        condition_value: 30,
+      },
+      data: {
+        mission: 45,
+      },
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe('field age is missing from data.');
+    expect(body.status).toBe('error');
+    expect(body.data).toBe(null);
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+  });
+
+  it(`If the field specified in the rule object is missing from the data passed`, async () => {
+    const data = {
+      rule: {
+        field: 'missions.count',
+        condition: 'gte',
+        condition_value: 30,
+      },
+      data: {
+        name: 'James Holden',
+        crew: 'Rocinante',
+        age: 34,
+        position: 'Captain',
+        missions: {
+          successful: 44,
+          failed: 1,
+        },
+      },
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe('field missions.count is missing from data.');
+    expect(body.status).toBe('error');
+    expect(body.data).toBe(null);
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+  });
+
+  it(`If the field specified in the rule object is missing from the data passed`, async () => {
+    const data = {
+      rule: {
+        field: '5',
+        condition: 'contains',
+        condition_value: 'rocinante',
+      },
+      data: ['The Nauvoo', 'The Razorback', 'The Roci', 'Tycho'],
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe('field 5 is missing from data.');
+    expect(body.status).toBe('error');
+    expect(body.data).toBe(null);
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+  });
+
+  it(`If the rule is successfully validated`, async () => {
+    const data = {
+      rule: {
+        field: 'missions.count',
+        condition: 'gte',
+        condition_value: 30,
+      },
+      data: {
+        name: 'James Holden',
+        crew: 'Rocinante',
+        age: 34,
+        position: 'Captain',
+        missions: {
+          count: 45,
+          successful: 44,
+          failed: 1,
+        },
+      },
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(200);
+    expect(body.message).toBe('field missions.count successfully validated.');
+    expect(body.status).toBe('success');
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+    const dataKey = ['validation'];
+    expect(Object.keys(body.data)).toEqual(dataKey);
+    const validationKeys = [
+      'error',
+      'field',
+      'field_value',
+      'condition',
+      'condition_value',
+    ];
+    expect(Object.keys(body.data.validation)).toEqual(validationKeys);
+    const validation = body.data.validation;
+    expect(validation.error).toBe(false);
+    expect(validation.field).toBe('missions.count');
+    expect(validation.field_value).toEqual(45);
+    expect(validation.condition).toEqual('gte');
+    expect(validation.condition_value).toEqual(30);
+  });
+
+  it(`If the rule is not successfully validated`, async () => {
+    const data = {
+      rule: {
+        field: 'missions.count',
+        condition: 'gte',
+        condition_value: 30,
+      },
+      data: {
+        name: 'James Holden',
+        crew: 'Rocinante',
+        age: 34,
+        position: 'Captain',
+        missions: {
+          count: 15,
+          successful: 44,
+          failed: 1,
+        },
+      },
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe('field missions.count failed validation.');
+    expect(body.status).toBe('error');
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+    const dataKey = ['validation'];
+    expect(Object.keys(body.data)).toEqual(dataKey);
+    const validationKeys = [
+      'error',
+      'field',
+      'field_value',
+      'condition',
+      'condition_value',
+    ];
+    expect(Object.keys(body.data.validation)).toEqual(validationKeys);
+    const validation = body.data.validation;
+    expect(validation.error).toBe(true);
+    expect(validation.field).toBe('missions.count');
+    expect(validation.field_value).toEqual(15);
+    expect(validation.condition).toEqual('gte');
+    expect(validation.condition_value).toEqual(30);
+  });
 });
