@@ -1,6 +1,6 @@
 import supertest from 'supertest';
-import { app } from '../server';
-import { throwIfUndefined } from '../util';
+import { app } from '../src/server';
+import { throwIfUndefined } from '../src/util';
 
 const server = () => supertest(app);
 
