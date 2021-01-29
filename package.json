@@ -5,8 +5,8 @@
   "main": "src/server",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": "npm run build && node ./build/src/server.js",
-    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && node ./build/server.js",
+    "build": "rm -rf build && tsc -p tsconfig.json",
     "test": "jest --coverage",
     "test:watch": "jest --watchAll",
     "postinstall": "tsc"
