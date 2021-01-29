@@ -42,7 +42,7 @@ const Controller = {
         gt: (fieldValue, condition_value) => fieldValue > condition_value,
         gte: (fieldValue, condition_value) => fieldValue >= condition_value,
         contains: (fieldValue, condition_value) =>
-          fieldValue !== condition_value,
+          fieldValue.includes(condition_value),
       };
 
       return evalData[condition](fieldValue, condition_value);

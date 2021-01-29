@@ -12,20 +12,6 @@ const data = {
   twitter: '@frankieetchy',
 };
 
-const validate = {
-  rule: {
-    field: 'missions',
-    condition: 'gte',
-    condition_value: 30,
-  },
-  data: {
-    name: 'James Holden',
-    crew: 'Rocinante',
-    age: 34,
-    position: 'Captain',
-    missions: 45,
-  },
-};
 describe('NOT FOUND ROUTE', () => {
   it('Should return not found', async () => {
     const { body, status } = await server().get('/unknown');
@@ -301,5 +287,39 @@ describe('POST', () => {
     expect(validation.field_value).toEqual(15);
     expect(validation.condition).toEqual('gte');
     expect(validation.condition_value).toEqual(30);
+  });
+
+  it(`If the rule is not successfully validated 2`, async () => {
+    const data = {
+      rule: {
+        field: '0',
+        condition: 'eq',
+        condition_value: 'a',
+      },
+      data: 'damien-marley',
+    };
+    const { body, status } = await server().post('/validate-rule').send(data);
+
+    expect(status).toBe(400);
+    expect(body.message).toBe('field 0 failed validation.');
+    expect(body.status).toBe('error');
+    const bodyKeys = ['message', 'status', 'data'];
+    expect(Object.keys(body)).toEqual(bodyKeys);
+    const dataKey = ['validation'];
+    expect(Object.keys(body.data)).toEqual(dataKey);
+    const validationKeys = [
+      'error',
+      'field',
+      'field_value',
+      'condition',
+      'condition_value',
+    ];
+    expect(Object.keys(body.data.validation)).toEqual(validationKeys);
+    const validation = body.data.validation;
+    expect(validation.error).toBe(true);
+    expect(validation.field).toBe('0');
+    expect(validation.field_value).toEqual('d');
+    expect(validation.condition).toEqual('eq');
+    expect(validation.condition_value).toEqual('a');
   });
 });

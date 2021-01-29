@@ -8,10 +8,20 @@ export function throwIfUndefined<T>(x: T | undefined, name: string): T {
 
 export const getDataValue = (
   data: { [key: string]: any },
-  value: string[],
+  value: string[] | any,
 ): any => {
-  if (Array.isArray(data)) return data;
-  if (typeof data === 'string') return data;
+  if (Array.isArray(data)) {
+    if (data[value[0] - 1]) {
+      return data[value[0] - 1];
+    }
+    return data;
+  }
+  if (typeof data === 'string') {
+    if (isNaN(+value[0])) {
+      return data;
+    }
+    return data[value[0]];
+  }
   if (typeof data !== 'object' || !value.length) return data;
   const newData = data[value[0]];
   if (!newData) return newData;
